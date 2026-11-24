@@ -1,0 +1,2048 @@
+{
+ "uid": "td-stockage",
+ "title": "TD Stockage – énergie & résultats",
+ "schemaVersion": 39,
+ "version": 1,
+ "time": {
+  "from": "now-30m",
+  "to": "now"
+ },
+ "refresh": "10s",
+ "tags": [
+  "greenit",
+  "td-stockage"
+ ],
+ "annotations": {
+  "list": [
+   {
+    "builtIn": 1,
+    "datasource": {
+     "type": "grafana",
+     "uid": "-- Grafana --"
+    },
+    "enable": true,
+    "hide": true,
+    "iconColor": "rgba(0, 211, 255, 1)",
+    "name": "Annotations & Alerts",
+    "type": "dashboard"
+   },
+   {
+    "datasource": {
+     "type": "grafana",
+     "uid": "-- Grafana --"
+    },
+    "enable": true,
+    "iconColor": "orange",
+    "name": "Benchmarks TD",
+    "target": {
+     "type": "tags",
+     "tags": [
+      "td"
+     ],
+     "matchAny": true,
+     "limit": 1000
+    }
+   }
+  ]
+ },
+ "templating": {
+  "list": [
+   {
+    "name": "fichier",
+    "label": "Fichier",
+    "type": "query",
+    "datasource": {
+     "type": "prometheus",
+     "uid": "prom-storing"
+    },
+    "includeAll": true,
+    "multi": true,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "allValue": ".*",
+    "refresh": 2,
+    "query": {
+     "query": "label_values(td_compression_gain_pct, fichier)",
+     "refId": "fichier"
+    },
+    "definition": "label_values(td_compression_gain_pct, fichier)"
+   },
+   {
+    "name": "methode",
+    "label": "Méthode d'échantillonnage",
+    "type": "query",
+    "datasource": {
+     "type": "prometheus",
+     "uid": "prom-storing"
+    },
+    "includeAll": true,
+    "multi": true,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "allValue": ".*",
+    "refresh": 2,
+    "query": {
+     "query": "label_values(td_echantillonnage_erreur_moy_pct, methode)",
+     "refId": "methode"
+    },
+    "definition": "label_values(td_echantillonnage_erreur_moy_pct, methode)"
+   },
+   {
+    "name": "jeu",
+    "label": "Jeu de données",
+    "type": "query",
+    "datasource": {
+     "type": "prometheus",
+     "uid": "prom-storing"
+    },
+    "includeAll": true,
+    "multi": true,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "allValue": ".*",
+    "refresh": 2,
+    "query": {
+     "query": "label_values(td_db_duree_s, jeu)",
+     "refId": "jeu"
+    },
+    "definition": "label_values(td_db_duree_s, jeu)"
+   },
+   {
+    "name": "action",
+    "label": "Action BDD",
+    "type": "query",
+    "datasource": {
+     "type": "prometheus",
+     "uid": "prom-storing"
+    },
+    "includeAll": true,
+    "multi": true,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "allValue": ".*",
+    "refresh": 2,
+    "query": {
+     "query": "label_values(td_db_duree_s, action)",
+     "refId": "action"
+    },
+    "definition": "label_values(td_db_duree_s, action)"
+   },
+   {
+    "name": "intensite",
+    "label": "Intensité carbone (gCO₂e/kWh)",
+    "type": "textbox",
+    "query": "56",
+    "current": {
+     "text": "56",
+     "value": "56"
+    },
+    "description": "Mix électrique ; ~56 France (ADEME), ~470 Tunisie. À adapter."
+   },
+   {
+    "name": "facteur_machine",
+    "label": "Facteur machine / CPU",
+    "type": "textbox",
+    "query": "1.5",
+    "current": {
+     "text": "1.5",
+     "value": "1.5"
+    }
+   }
+  ]
+ },
+ "panels": [
+  {
+   "type": "row",
+   "title": "Mesures en direct (RAPL + node-exporter)",
+   "id": 1,
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "type": "stat",
+   "title": "Puissance package actuelle",
+   "id": 2,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Compteur RAPL du package CPU",
+   "gridPos": {
+    "x": 0,
+    "y": 1,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(node_rapl_package_joules_total{path=~\".*/intel-rapl:0\"}[30s])",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "watt"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "value",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "stat",
+   "title": "Énergie sur la période",
+   "id": 3,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Énergie package CPU consommée sur la plage de temps sélectionnée",
+   "gridPos": {
+    "x": 4,
+    "y": 1,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "increase(node_rapl_package_joules_total{path=~\".*/intel-rapl:0\"}[$__range]) / 3600",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "watth",
+     "decimals": 2
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "value",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "stat",
+   "title": "CO₂e sur la période",
+   "id": 4,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Énergie (kWh) × intensité carbone du réseau (variable 'intensite', g CO₂e/kWh)",
+   "gridPos": {
+    "x": 8,
+    "y": 1,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "increase(node_rapl_package_joules_total{path=~\".*/intel-rapl:0\"}[$__range]) / 3600 / 1000 * $intensite",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "massg",
+     "decimals": 3
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "value",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "stat",
+   "title": "CPU moyen sur la période",
+   "id": 5,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 12,
+    "y": 1,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "100 * (1 - avg(avg_over_time(rate(node_cpu_seconds_total{mode=\"idle\"}[1m])[$__range:])))",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "value",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "stat",
+   "title": "Puissance moyenne sur la période",
+   "id": 6,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 1,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "increase(node_rapl_package_joules_total{path=~\".*/intel-rapl:0\"}[$__range]) / $__range_s",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "watt",
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "value",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "stat",
+   "title": "Estimation machine entière",
+   "id": 7,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "RAPL ne mesure que CPU (+ uncore). Estimation grossière de la machine entière : × facteur (variable).",
+   "gridPos": {
+    "x": 20,
+    "y": 1,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "increase(node_rapl_package_joules_total{path=~\".*/intel-rapl:0\"}[$__range]) / 3600 * $facteur_machine",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "watth",
+     "decimals": 2
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "value",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Puissance RAPL (W) – zones annotées = benchmarks",
+   "id": 8,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Les zones colorées sont les annotations envoyées par les scripts (push.py)",
+   "gridPos": {
+    "x": 0,
+    "y": 5,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(node_rapl_package_joules_total{path=~\".*/intel-rapl:0\"}[$__rate_interval])",
+     "legendFormat": "package",
+     "refId": "A"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(node_rapl_core_joules_total[$__rate_interval])",
+     "legendFormat": "cœurs",
+     "refId": "B"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(node_rapl_uncore_joules_total[$__rate_interval])",
+     "legendFormat": "uncore (GPU intégré...)",
+     "refId": "C"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "watt",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "CPU (%)",
+   "id": 9,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 12,
+    "y": 5,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])))",
+     "legendFormat": "CPU total",
+     "refId": "A"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "100 * avg(rate(node_cpu_seconds_total{mode=\"iowait\"}[$__rate_interval]))",
+     "legendFormat": "iowait",
+     "refId": "B"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Disque (octets/s)",
+   "id": 10,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Utile pour la partie stockage en base",
+   "gridPos": {
+    "x": 0,
+    "y": 13,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "sum(rate(node_disk_read_bytes_total[$__rate_interval]))",
+     "legendFormat": "lecture",
+     "refId": "A"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "sum(rate(node_disk_written_bytes_total[$__rate_interval]))",
+     "legendFormat": "écriture",
+     "refId": "B"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Réseau (octets/s)",
+   "id": 11,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Utile pour la partie transfert / protocoles",
+   "gridPos": {
+    "x": 12,
+    "y": 13,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "sum(rate(node_network_receive_bytes_total{device!~\"lo|veth.*|docker.*|br-.*\"}[$__rate_interval]))",
+     "legendFormat": "reçu",
+     "refId": "A"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "sum(rate(node_network_transmit_bytes_total{device!~\"lo|veth.*|docker.*|br-.*\"}[$__rate_interval]))",
+     "legendFormat": "envoyé",
+     "refId": "B"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "row",
+   "title": "Compression (résultats poussés par compress.py)",
+   "id": 12,
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 21,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Gain de compression (%)",
+   "id": 13,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 22,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_compression_gain_pct{fichier=~\"$fichier\"}",
+     "legendFormat": "{{fichier}} · {{outil}} -{{niveau}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Temps de compression",
+   "id": 14,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 22,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_compression_temps_s{fichier=~\"$fichier\"}",
+     "legendFormat": "{{fichier}} · {{outil}} -{{niveau}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Énergie nette de compression",
+   "id": 15,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Énergie RAPL package pendant la compression, moins la consommation au repos",
+   "gridPos": {
+    "x": 16,
+    "y": 22,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_compression_energie_nette_joules{fichier=~\"$fichier\"}",
+     "legendFormat": "{{fichier}} · {{outil}} -{{niveau}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "joule",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Ratio gain / temps (% par s)",
+   "id": 16,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 33,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_compression_gain_pct{fichier=~\"$fichier\"} / td_compression_temps_s{fichier=~\"$fichier\"}",
+     "legendFormat": "{{fichier}} · {{outil}} -{{niveau}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Ratio gain / énergie (% par J)",
+   "id": 17,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 33,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_compression_gain_pct{fichier=~\"$fichier\"} / td_compression_energie_nette_joules{fichier=~\"$fichier\"}",
+     "legendFormat": "{{fichier}} · {{outil}} -{{niveau}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Temps de décompression",
+   "id": 18,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 33,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_decompression_temps_s{fichier=~\"$fichier\"}",
+     "legendFormat": "{{fichier}} · {{outil}} -{{niveau}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "row",
+   "title": "Échantillonnage (résultats poussés par sampling.py)",
+   "id": 19,
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 44,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Erreur moyenne vs référence (%)",
+   "id": 20,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 45,
+    "w": 8,
+    "h": 16
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_echantillonnage_erreur_moy_pct{methode=~\"$methode\"}",
+     "legendFormat": "{{methode}} · {{param}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Pire erreur (%)",
+   "id": 21,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 45,
+    "w": 8,
+    "h": 16
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_echantillonnage_erreur_max_pct{methode=~\"$methode\"}",
+     "legendFormat": "{{methode}} · {{param}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Données conservées (%)",
+   "id": 22,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 45,
+    "w": 8,
+    "h": 16
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_echantillonnage_pct_donnees{methode=~\"$methode\"}",
+     "legendFormat": "{{methode}} · {{param}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "row",
+   "title": "Transfert HTTP vs MQTT (proxy + transfer/send.py)",
+   "id": 23,
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 61,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "Débit à travers le proxy (octets/s)",
+   "id": 24,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Compté par transfer/proxy.py (niveau applicatif, sans en-têtes TCP/IP)",
+   "gridPos": {
+    "x": 0,
+    "y": 62,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(td_proxy_octets_total[$__rate_interval])",
+     "legendFormat": "{{proto}} {{sens}}",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "CPU broker Mosquitto (cœurs)",
+   "id": 25,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 12,
+    "y": 62,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(container_cpu_usage_seconds_total{name=\"storing-infra-mosquitto-1\"}[$__rate_interval])",
+     "legendFormat": "mosquitto",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "bargauge",
+   "title": "Octets transférés (total)",
+   "id": 26,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 70,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_transfert_octets_total",
+     "legendFormat": "{{scenario}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "decbytes",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Durée d'envoi",
+   "id": 27,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 70,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_transfert_duree_s",
+     "legendFormat": "{{scenario}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Énergie nette",
+   "id": 28,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 70,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_transfert_energie_nette_joules",
+     "legendFormat": "{{scenario}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "joule",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "CPU récepteur (serveur HTTP / abonné MQTT)",
+   "id": 29,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 78,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_transfert_cpu_recepteur_s",
+     "legendFormat": "{{scenario}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "CPU émetteur",
+   "id": 30,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 78,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_transfert_cpu_emetteur_s",
+     "legendFormat": "{{scenario}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "CPU broker",
+   "id": 31,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 78,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_transfert_cpu_broker_s",
+     "legendFormat": "{{scenario}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "row",
+   "title": "Bases de données (cAdvisor + db/bench_*.py)",
+   "id": 32,
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 86,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "CPU par base (cœurs)",
+   "id": 33,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 87,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "rate(container_cpu_usage_seconds_total{name=~\"storing-infra-(postgres|mongo|influxdb).*\"}[$__rate_interval])",
+     "legendFormat": "{{name}}",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "RAM par base",
+   "id": 34,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 87,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "container_memory_working_set_bytes{name=~\"storing-infra-(postgres|mongo|influxdb).*\"}",
+     "legendFormat": "{{name}}",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Écritures disque par base (octets/s)",
+   "id": 35,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 87,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "sum by (name) (rate(container_fs_writes_bytes_total{name=~\"storing-infra-(postgres|mongo|influxdb).*\"}[$__rate_interval]))",
+     "legendFormat": "{{name}}",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps",
+     "custom": {
+      "fillOpacity": 10,
+      "lineWidth": 1
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "bargauge",
+   "title": "Durée par action",
+   "id": 36,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "Échelle très large : filtrer par jeu / action en haut",
+   "gridPos": {
+    "x": 0,
+    "y": 95,
+    "w": 8,
+    "h": 16
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_db_duree_s{jeu=~\"$jeu\", action=~\"$action\"}",
+     "legendFormat": "{{base}} · {{jeu}} · {{action}} · {{mode}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Énergie nette par action",
+   "id": 37,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 95,
+    "w": 8,
+    "h": 16
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_db_energie_nette_joules{jeu=~\"$jeu\", action=~\"$action\"}",
+     "legendFormat": "{{base}} · {{jeu}} · {{action}} · {{mode}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "joule",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "CPU de la base par action",
+   "id": 38,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 95,
+    "w": 8,
+    "h": 16
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_db_cpu_base_s{jeu=~\"$jeu\", action=~\"$action\"}",
+     "legendFormat": "{{base}} · {{jeu}} · {{action}} · {{mode}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Débit d'écriture (points/s)",
+   "id": 39,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 0,
+    "y": 111,
+    "w": 8,
+    "h": 12
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_db_debit_pts_s{jeu=~\"$jeu\"}",
+     "legendFormat": "{{base}} · {{jeu}} · {{mode}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Écritures disque par action",
+   "id": 40,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 111,
+    "w": 8,
+    "h": 12
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_db_io_ecriture_octets{jeu=~\"$jeu\", action=~\"$action\"}",
+     "legendFormat": "{{base}} · {{jeu}} · {{action}} · {{mode}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "decbytes",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  },
+  {
+   "type": "bargauge",
+   "title": "Taille sur disque des données",
+   "id": 41,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom-storing"
+   },
+   "description": "",
+   "gridPos": {
+    "x": 16,
+    "y": 111,
+    "w": 8,
+    "h": 12
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom-storing"
+     },
+     "expr": "td_db_taille_octets{jeu=~\"$jeu\"}",
+     "legendFormat": "{{base}} · {{jeu}}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "decbytes",
+     "min": 0,
+     "color": {
+      "mode": "continuous-BlPu"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "valueMode": "color",
+    "namePlacement": "left"
+   },
+   "transformations": []
+  }
+ ]
+}

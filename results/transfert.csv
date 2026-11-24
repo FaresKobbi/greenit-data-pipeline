@@ -1,0 +1,7 @@
+scenario,proto,messages,connexions_tcp,octets_montants,octets_descendants,octets_total,octets_utiles,surcout_pct,duree_s,cpu_emetteur_s,cpu_recepteur_s,cpu_broker_s,energie_nette_J
+"HTTP unitaire, 1 connexion/requête",http,4416,4416,1334460,490176,1824636,411516,343.4,24.817,13.255,9.458,0.014,49.24
+"HTTP unitaire, keep-alive",http,4416,1,1334460,490176,1824636,411516,343.4,7.996,4.53,1.916,0.005,30.35
+"MQTT unitaire, QoS 0",mqtt,4416,1,495450,4,495454,411516,20.4,0.364,0.217,0.243,0.02,0.92
+"MQTT unitaire, QoS 1",mqtt,4416,1,504282,17668,521950,411516,26.8,0.487,0.428,0.314,0.099,1.97
+HTTP lot (1 requête),http,1,1,416146,111,416257,411516,1.2,0.048,0.025,0.023,0.0,0.09
+"MQTT lot (1 message, QoS 1)",mqtt,1,1,415980,8,415988,411516,1.1,0.016,0.009,0.007,0.002,0.19

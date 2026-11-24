@@ -1,0 +1,77 @@
+# Stack de monitoring dédiée au TD "stockage des données".
+# Indépendante de ../../monitoring (nom de projet, ports et volumes différents).
+#   docker compose up -d        -> Grafana http://localhost:3001 (admin/admin)
+#                                  Prometheus http://localhost:9092
+name: storing-monitoring
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9092:9090"
+    volumes:
+      - ./config:/etc/prometheus:ro
+      - prom-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # pour joindre node-exporter (réseau hôte)
+
+  # node-exporter sur l'HÔTE (et non dans un conteneur isolé comme l'ancien TD) :
+  # CPU, disque, réseau réels de la machine + énergie RAPL (collecteur rapl).
+  node-exporter:
+    image: prom/node-exporter:latest
+    network_mode: host
+    pid: host
+    user: root              # RAPL energy_uj est réservé à root (sinon chmod à chaque reboot)
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro,rslave
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/rootfs
+      - --collector.rapl
+      - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run|var/lib/docker/.+)($|/)
+
+  # CPU / RAM / I/O par conteneur (bases de données, broker MQTT)
+  cadvisor:
+    image: ghcr.io/google/cadvisor:latest
+    privileged: true
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    command:
+      - --docker_only=true
+      - --housekeeping_interval=5s
+      - --store_container_labels=false
+
+  # Les scripts du TD (sampling.py, compress.py, ...) y poussent leurs résultats.
+  pushgateway:
+    image: prom/pushgateway:latest
+    ports:
+      - "9091:9091"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  prom-data:
+  grafana-data:

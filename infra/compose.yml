@@ -1,0 +1,45 @@
+# Broker MQTT + les 3 bases de données du TD.
+#   docker compose up -d
+name: storing-infra
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports: ["1883:1883"]
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: td
+      POSTGRES_PASSWORD: td
+      POSTGRES_DB: meteo
+    ports: ["5432:5432"]
+    shm_size: 1g
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:8
+    ports: ["27017:27017"]
+    volumes:
+      - mongo-data:/data/db
+
+  influxdb:
+    image: influxdb:2.7          # épinglé : "latest" = InfluxDB 3 (API différente)
+    ports: ["8086:8086"]
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: adminadmin
+      DOCKER_INFLUXDB_INIT_ORG: td
+      DOCKER_INFLUXDB_INIT_BUCKET: meteo
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: td-token
+    volumes:
+      - influx-data:/var/lib/influxdb2
+
+volumes:
+  pg-data:
+  mongo-data:
+  influx-data:

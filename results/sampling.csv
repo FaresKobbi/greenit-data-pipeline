@@ -1,0 +1,35 @@
+methode,param,jours,pct_donnees,erreur_moy_pct,erreur_max_pct,precision_pct,ratio_precision_quantite
+aleatoire,1%,2,1.1,12.2,35.73,87.8,80.78
+aleatoire,2%,4,2.2,7.99,26.97,92.01,42.33
+aleatoire,5%,9,4.9,5.25,19.38,94.75,19.37
+aleatoire,10%,18,9.8,3.54,13.96,96.46,9.86
+aleatoire,15%,28,15.2,2.99,10.21,97.01,6.38
+aleatoire,20%,37,20.1,2.44,8.12,97.56,4.85
+aleatoire,30%,55,29.9,1.86,6.94,98.14,3.28
+aleatoire,50%,92,50.0,1.29,5.04,98.71,1.97
+periodique,1/semaine,26.3,14.3,1.63,3.58,98.37,6.89
+periodique,1/mois,6,3.3,2.1,6.12,97.9,30.02
+stratifie:mois,1%,6,3.3,3.49,12.25,96.51,29.6
+stratifie:mois,2%,6,3.3,3.43,12.56,96.57,29.62
+stratifie:mois,5%,12,6.5,2.38,8.87,97.62,14.97
+stratifie:mois,10%,18,9.8,1.91,6.68,98.09,10.03
+stratifie:mois,15%,28,15.2,1.57,5.24,98.43,6.47
+stratifie:mois,20%,36,19.6,1.27,5.34,98.73,5.05
+stratifie:mois,30%,54,29.3,0.92,3.36,99.08,3.38
+stratifie:mois,50%,94,51.1,0.6,2.04,99.4,1.95
+stratifie:rosee (terciles),1%,3,1.6,7.41,30.11,92.59,56.79
+stratifie:rosee (terciles),2%,3,1.6,7.72,28.15,92.28,56.6
+stratifie:rosee (terciles),5%,9,4.9,4.35,18.7,95.65,19.55
+stratifie:rosee (terciles),10%,18,9.8,2.86,11.94,97.14,9.93
+stratifie:rosee (terciles),15%,27,14.7,2.24,9.47,97.76,6.66
+stratifie:rosee (terciles),20%,36,19.6,1.97,6.78,98.03,5.01
+stratifie:rosee (terciles),30%,55,29.9,1.39,6.1,98.61,3.3
+stratifie:rosee (terciles),50%,91,49.5,0.94,3.54,99.06,2.0
+stratifie:vent (terciles),1%,3,1.6,8.97,31.3,91.03,55.83
+stratifie:vent (terciles),2%,3,1.6,9.02,31.16,90.98,55.8
+stratifie:vent (terciles),5%,9,4.9,5.23,19.1,94.77,19.38
+stratifie:vent (terciles),10%,18,9.8,3.54,13.9,96.46,9.86
+stratifie:vent (terciles),15%,27,14.7,2.8,10.09,97.2,6.62
+stratifie:vent (terciles),20%,37,20.1,2.37,9.85,97.63,4.86
+stratifie:vent (terciles),30%,55,29.9,1.82,7.17,98.18,3.28
+stratifie:vent (terciles),50%,92,50.0,1.2,4.03,98.8,1.98

@@ -1,0 +1,110 @@
+lecture CSV small  unitaire       4,416 pts      0.01 s       0.0 J
+lecture CSV small  lot            4,416 pts      0.01 s       0.0 J
+lecture CSV medium unitaire     499,008 pts      0.38 s       3.8 J
+lecture CSV medium lot          499,008 pts      0.42 s       3.2 J
+### postgresql — repos 8.69 W
+## postgresql / small
+  ecriture   unitaire               5.0664 s  cpu base    1.302 s  io w      37.0 Mo       4.46 J  872 pts/s 
+  ecriture   unitaire_sync_off      0.2608 s  cpu base    0.090 s  io w       0.2 Mo       1.88 J  16935 pts/s 
+  ecriture   lot                    0.0887 s  cpu base    0.032 s  io w       0.5 Mo       0.00 J  49813 pts/s 
+  lecture    1er appel              0.0027 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 1           0.0020 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 2           0.0019 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 3           0.0022 s  cpu base    0.001 s  io w       0.0 Mo       0.01 J   100 lignes
+  lecture    repetition 4           0.0019 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  agregation 1er appel              0.0024 s  cpu base    0.002 s  io w       0.0 Mo       0.00 J   moy=26.7216
+  agregation repetition 1           0.0023 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   moy=26.7216
+  agregation repetition 2           0.0021 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   moy=26.7216
+  agregation repetition 3           0.0021 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   moy=26.7216
+  agregation repetition 4           0.0021 s  cpu base    0.001 s  io w       0.0 Mo       0.01 J   moy=26.7216
+## postgresql / medium
+  ecriture   lot                    2.6560 s  cpu base    1.366 s  io w      57.8 Mo      12.26 J  187882 pts/s 
+  lecture    1er appel              0.0016 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 1           0.0018 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 2           0.0019 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 3           0.0019 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 4           0.0018 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  agregation 1er appel              0.0379 s  cpu base    0.104 s  io w       0.0 Mo       0.08 J   moy=26.6331
+  agregation repetition 1           0.0424 s  cpu base    0.118 s  io w       0.0 Mo       0.06 J   moy=26.6331
+  agregation repetition 2           0.0475 s  cpu base    0.132 s  io w       0.0 Mo       0.07 J   moy=26.6331
+  agregation repetition 3           0.0468 s  cpu base    0.131 s  io w       0.0 Mo       0.00 J   moy=26.6331
+  agregation repetition 4           0.0486 s  cpu base    0.133 s  io w       0.0 Mo       0.00 J   moy=26.6331
+### mongodb — repos 5.97 W
+## mongodb / small
+  ecriture   unitaire               4.5591 s  cpu base    1.228 s  io w       1.3 Mo      19.86 J  969 pts/s 
+  ecriture   lot                    0.0915 s  cpu base    0.047 s  io w       0.0 Mo       0.56 J  48269 pts/s 
+  lecture    1er appel              0.0034 s  cpu base    0.001 s  io w       0.0 Mo       0.03 J   100 lignes
+  lecture    repetition 1           0.0030 s  cpu base    0.001 s  io w       0.0 Mo       0.02 J   100 lignes
+  lecture    repetition 2           0.0023 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 3           0.0026 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 4           0.0022 s  cpu base    0.001 s  io w       0.0 Mo       0.01 J   100 lignes
+  agregation 1er appel              0.0041 s  cpu base    0.003 s  io w       0.0 Mo       0.01 J   moy=26.7216
+  agregation repetition 1           0.0040 s  cpu base    0.003 s  io w       0.0 Mo       0.01 J   moy=26.7216
+  agregation repetition 2           0.0041 s  cpu base    0.003 s  io w       0.0 Mo       0.01 J   moy=26.7216
+  agregation repetition 3           0.0039 s  cpu base    0.003 s  io w       0.0 Mo       0.00 J   moy=26.7216
+  agregation repetition 4           0.0039 s  cpu base    0.003 s  io w       0.0 Mo       0.01 J   moy=26.7216
+## mongodb / medium
+  ecriture   lot                    4.8247 s  cpu base    2.308 s  io w      21.5 Mo      42.11 J  103429 pts/s 
+  lecture    1er appel              0.0015 s  cpu base    0.000 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 1           0.0015 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 2           0.0018 s  cpu base    0.000 s  io w       0.0 Mo       0.04 J   100 lignes
+  lecture    repetition 3           0.0016 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 4           0.0016 s  cpu base    0.001 s  io w       0.0 Mo       0.00 J   100 lignes
+  agregation 1er appel              0.0727 s  cpu base    0.072 s  io w       0.0 Mo       0.94 J   moy=26.6331
+  agregation repetition 1           0.0784 s  cpu base    0.078 s  io w       0.0 Mo       0.87 J   moy=26.6331
+  agregation repetition 2           0.0551 s  cpu base    0.054 s  io w       0.0 Mo       0.62 J   moy=26.6331
+  agregation repetition 3           0.0587 s  cpu base    0.058 s  io w       0.0 Mo       0.60 J   moy=26.6331
+  agregation repetition 4           0.0850 s  cpu base    0.085 s  io w       0.0 Mo       0.51 J   moy=26.6331
+### influxdb — repos 7.62 W
+## influxdb / small
+  ecriture   unitaire              17.6808 s  cpu base    9.910 s  io w      20.3 Mo      44.22 J  250 pts/s 
+  ecriture   lot                    0.5903 s  cpu base    1.983 s  io w       1.9 Mo       1.08 J  7481 pts/s 
+  lecture    1er appel              0.0274 s  cpu base    0.025 s  io w       0.0 Mo       0.00 J   100 lignes
+  lecture    repetition 1           0.0277 s  cpu base    0.026 s  io w       0.0 Mo       0.04 J   100 lignes
+  lecture    repetition 2           0.0248 s  cpu base    0.023 s  io w       0.0 Mo       0.03 J   100 lignes
+  lecture    repetition 3           0.0247 s  cpu base    0.023 s  io w       0.0 Mo       0.04 J   100 lignes
+  lecture    repetition 4           0.0263 s  cpu base    0.024 s  io w       0.0 Mo       0.02 J   100 lignes
+  agregation 1er appel              0.0313 s  cpu base    0.028 s  io w       0.0 Mo       0.04 J   moy=26.7216
+  agregation repetition 1           0.0319 s  cpu base    0.029 s  io w       0.0 Mo       0.04 J   moy=26.7216
+  agregation repetition 2           0.0336 s  cpu base    0.031 s  io w       0.0 Mo       0.03 J   moy=26.7216
+  agregation repetition 3           0.0320 s  cpu base    0.030 s  io w       0.0 Mo       0.04 J   moy=26.7216
+  agregation repetition 4           0.0405 s  cpu base    0.244 s  io w       0.0 Mo       0.10 J   moy=26.7216
+## influxdb / medium
+  ecriture   lot                    5.5135 s  cpu base    8.633 s  io w      13.6 Mo      21.90 J  90506 pts/s 
+  lecture    1er appel              0.2682 s  cpu base    0.501 s  io w       0.0 Mo       3.01 J   100 lignes
+  lecture    repetition 1           0.4363 s  cpu base    0.677 s  io w       0.0 Mo       1.06 J   100 lignes
+  lecture    repetition 2           0.2885 s  cpu base    0.517 s  io w       0.0 Mo       1.75 J   100 lignes
+  lecture    repetition 3           0.3444 s  cpu base    0.866 s  io w       0.0 Mo       1.38 J   100 lignes
+  lecture    repetition 4           0.4128 s  cpu base    0.751 s  io w       0.0 Mo       1.27 J   100 lignes
+  agregation 1er appel              0.1114 s  cpu base    0.115 s  io w       0.0 Mo       0.14 J   moy=26.6331
+  agregation repetition 1           0.1626 s  cpu base    0.170 s  io w       0.0 Mo       0.00 J   moy=26.6331
+  agregation repetition 2           0.1802 s  cpu base    0.694 s  io w       0.0 Mo       0.25 J   moy=26.6331
+  agregation repetition 3           0.1432 s  cpu base    0.150 s  io w       0.0 Mo       0.00 J   moy=26.6331
+  agregation repetition 4           0.1563 s  cpu base    0.163 s  io w       0.0 Mo       0.00 J   moy=26.6331
+### mongodb-timeseries — repos 5.47 W
+## mongodb-timeseries / small
+  ecriture   unitaire               3.4947 s  cpu base    1.457 s  io w       7.5 Mo      20.35 J  1264 pts/s 
+  ecriture   lot                    0.0281 s  cpu base    0.010 s  io w       0.0 Mo       0.38 J  157382 pts/s 
+  lecture    1er appel              0.0016 s  cpu base    0.001 s  io w       0.0 Mo       0.06 J   100 lignes
+  lecture    repetition 1           0.0032 s  cpu base    0.002 s  io w       0.0 Mo       0.02 J   100 lignes
+  lecture    repetition 2           0.0035 s  cpu base    0.002 s  io w       0.0 Mo       0.01 J   100 lignes
+  lecture    repetition 3           0.0036 s  cpu base    0.002 s  io w       0.0 Mo       0.01 J   100 lignes
+  lecture    repetition 4           0.0038 s  cpu base    0.007 s  io w       0.0 Mo       0.02 J   100 lignes
+  agregation 1er appel              0.0041 s  cpu base    0.003 s  io w       0.0 Mo       0.01 J   moy=26.7216
+  agregation repetition 1           0.0043 s  cpu base    0.003 s  io w       0.0 Mo       0.02 J   moy=26.7216
+  agregation repetition 2           0.0846 s  cpu base    0.089 s  io w       0.0 Mo       0.33 J   moy=26.7216
+  agregation repetition 3           0.0018 s  cpu base    0.003 s  io w       0.0 Mo       0.04 J   moy=26.7216
+  agregation repetition 4           0.0029 s  cpu base    0.006 s  io w       0.0 Mo       0.03 J   moy=26.7216
+## mongodb-timeseries / medium
+  ecriture   lot                    2.7881 s  cpu base    1.056 s  io w      13.0 Mo      35.63 J  178978 pts/s 
+  lecture    1er appel              0.0163 s  cpu base    0.016 s  io w       0.0 Mo       0.20 J   100 lignes
+  lecture    repetition 1           0.0122 s  cpu base    0.012 s  io w       0.0 Mo       0.24 J   100 lignes
+  lecture    repetition 2           0.0414 s  cpu base    0.040 s  io w       0.0 Mo       0.14 J   100 lignes
+  lecture    repetition 3           0.0408 s  cpu base    0.040 s  io w       0.0 Mo       0.12 J   100 lignes
+  lecture    repetition 4           0.0438 s  cpu base    0.043 s  io w       0.0 Mo       0.18 J   100 lignes
+  agregation 1er appel              0.0543 s  cpu base    0.053 s  io w       0.0 Mo       0.14 J   moy=26.6331
+  agregation repetition 1           0.0665 s  cpu base    0.066 s  io w       0.0 Mo       0.19 J   moy=26.6331
+  agregation repetition 2           0.0603 s  cpu base    0.060 s  io w       0.0 Mo       0.12 J   moy=26.6331
+  agregation repetition 3           0.0563 s  cpu base    0.056 s  io w       0.0 Mo       0.13 J   moy=26.6331
+  agregation repetition 4           0.0588 s  cpu base    0.058 s  io w       0.0 Mo       0.14 J   moy=26.6331
+=== terminé : Tue Nov 24 11:02:25 AM CET 2026 ===

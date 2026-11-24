@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets locaux
+.grafana_password
+.env
+
+# Données générées (régénérables, trop lourdes pour GitHub : big.csv = 1,9 Go)
+data/*.csv
+data/big.json
+
+# Journaux d'exécution
+results/transfer-logs/
